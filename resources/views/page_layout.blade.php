@@ -159,14 +159,14 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="{{route('admin.projects')}}">
+      <a class="nav-link" href="{{url('projects')}}">
         <i class="fa fa-rocket menu-icon"></i>
         <span class="menu-title">Projects</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="{{route('admin.products')}}">
+      <a class="nav-link" href="{{url('products')}}">
         <i class="fa fa-list-alt menu-icon"></i>
         <span class="menu-title">Our Products</span>
       </a>

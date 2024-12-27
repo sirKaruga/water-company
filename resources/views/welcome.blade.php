@@ -103,7 +103,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center my-4">
         <h1>Blog Posts</h1>
-        <!-- Button to trigger modal -->
+        <!-- Button to trigger create modal -->
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createBlogModal">
             Create New Blog
         </button>
@@ -138,8 +138,7 @@
                             {{ ucfirst($blog->status) }}
                         </span>
                     </td>
-
-                    <td>{{ $blog->published_at  }}</td>
+                    <td>{{ $blog->published_at }}</td>
                     <td>
                         @if($blog->image)
                             <img src="{{ asset('storage/' . $blog->image) }}" alt="Blog Image" width="100" class="img-fluid">
@@ -148,10 +147,14 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('blogs.show', $blog->id) }}" class="btn btn-info btn-sm">View</a>
-                        <a href="{{ route('blogs.edit', $blog->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                        <button
+                            class="btn btn-primary btn-sm"
+                            onclick="openEditModal({{ $blog->id }}, '{{ $blog->title }}', '{{ addslashes($blog->excerpt) }}', '{{ $blog->published_at }}', '{{ $blog->status }}', '{{ $blog->image ? asset('storage/' . $blog->image) : '' }}', '{{ addslashes($blog->content) }}')"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editBlogModal">
+                            Edit
+                        </button>
 
-                        <!-- Delete button (with confirmation) -->
                         <form action="{{ route('blogs.destroy', $blog->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
@@ -173,20 +176,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Create blog form -->
                 <form id="createBlogForm" action="{{ route('blogs.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
                         <input type="text" name="title" id="title" class="form-control" required>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="slug" class="form-label">Slug</label>
-                        <input type="text" name="slug" id="slug" class="form-control" required>
-                    </div>
-
-
 
                     <div class="mb-3">
                         <label for="excerpt" class="form-label">Excerpt</label>
@@ -214,12 +209,8 @@
 
                     <div class="mb-3">
                         <label for="content" class="form-label">Content</label>
-
-                        {{-- <textarea name="content" id="content" class="form-control" rows="10" required></textarea> --}}
-                        <!-- Hidden input to store the Quill editor content -->
                         <input type="hidden" name="content" id="content" required>
-                        <!-- Create the editor container -->
-                        <div id="editor"></div>
+                        <div id="createEditor"></div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Create Blog</button>
@@ -229,57 +220,100 @@
     </div>
 </div>
 
+<!-- Modal to Edit Blog -->
+<div class="modal fade" id="editBlogModal" tabindex="-1" aria-labelledby="editBlogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBlogModalLabel">Edit Blog</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editBlogForm" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label for="editTitle" class="form-label">Title</label>
+                        <input type="text" name="title" id="editTitle" class="form-control" required>
+                    </div>
 
+                    <div class="mb-3">
+                        <label for="editExcerpt" class="form-label">Excerpt</label>
+                        <textarea name="excerpt" id="editExcerpt" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editPublishedAt" class="form-label">Published At</label>
+                        <input type="date" name="published_at" id="editPublishedAt" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editStatus" class="form-label">Status</label>
+                        <select name="status" id="editStatus" class="form-select">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editImage" class="form-label">Image</label>
+                        <input type="file" name="image" id="editImage" class="form-control">
+                        <img id="currentImage" src="" alt="Current Image" class="mt-2 img-fluid" width="100">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editContent" class="form-label">Content</label>
+                        <input type="hidden" name="content" id="editContent">
+                        <div id="editEditor"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Blog</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+
 <script>
-// Handle form submission via AJAX
-$('#createBlogForm').on('submit', function(e) {
-    e.preventDefault();
+    const createEditor = new Quill('#createEditor', { theme: 'snow' });
+    const editEditor = new Quill('#editEditor', { theme: 'snow' });
 
-    let formData = new FormData(this);
-
-    $.ajax({
-        url: $(this).attr('action'),
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            // Close the modal and reset the form
-            $('#createBlogModal').modal('hide');
-            $('#createBlogForm')[0].reset();
-
-            // Optionally, update the blog list here via AJAX or reload the page
-            location.reload(); // Reload the page to show the new blog
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX Error:', xhr.responseText); // Log the server's error response
-            alert('Error occurred while creating the blog.');
-        }
-
+    // Handle form submission for the create modal
+    document.querySelector('#createBlogForm').addEventListener('submit', function() {
+        const content = createEditor.root.innerHTML;
+        document.querySelector('#content').value = content;
     });
-});
+
+    // Handle form submission for the edit modal
+    document.querySelector('#editBlogForm').addEventListener('submit', function() {
+        const content = editEditor.root.innerHTML;
+        document.querySelector('#editContent').value = content;
+    });
+
+    // Open the edit modal and populate fields
+    function openEditModal(id, title, excerpt, publishedAt, status, imageUrl, content) {
+        const form = document.querySelector('#editBlogForm');
+        form.action = `/blogs/${id}`;
+        document.querySelector('#editTitle').value = title;
+        document.querySelector('#editExcerpt').value = excerpt;
+        document.querySelector('#editPublishedAt').value = publishedAt;
+        document.querySelector('#editStatus').value = status;
+        editEditor.root.innerHTML = content;
+
+        const currentImage = document.querySelector('#currentImage');
+        if (imageUrl) {
+            currentImage.src = imageUrl;
+            currentImage.style.display = 'block';
+        } else {
+            currentImage.style.display = 'none';
+        }
+    }
 </script>
-
- {{-- my additional scripts --}}
- <!-- Include the Quill library -->
- <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
- <!-- Initialize Quill editor -->
- <script>
- const quill = new Quill('#editor', {
-     theme: 'snow'
- });
-
-  // Before submitting the form, update the hidden input with the editor content
-  document.querySelector('#createBlogForm').addEventListener('submit', function() {
-    const content = quill.root.innerHTML; // Get editor content
-    document.querySelector('#content').value = content; // Update hidden input
-});
-
- </script>
-
-
 @endsection
