@@ -63,9 +63,10 @@
                         <a href="{{url('contact')}}" class="nav-item nav-link">Contact</a>
                         <a href="{{url('web_blog')}}" class="nav-item nav-link">Our Blog</a>
                         <a href="{{url('web_career')}}" class="nav-item nav-link">Careers</a>
+                        <a href="{{url('web_projects')}}" class="nav-item nav-link">Projects</a>
                         <a href="about.html" class="nav-item nav-link">FAQs</a>
                     </div>
-                    <a href="" class="btn btn-primary px-3 d-none d-lg-flex">Our Services</a>
+                    <a href="{{url('web_services')}}" class="btn btn-primary px-3 d-none d-lg-flex">Our Services</a>
                 </div>
             </nav>
         </div>

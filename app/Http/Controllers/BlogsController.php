@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,15 +25,20 @@ class BlogsController extends Controller
      public function store(Request $request)
      {
         $user = Auth::user();
+        Log::debug("Content processing unit");
+        Log::debug($request->all());
+
          $validated = $request->validate([
              'title' => 'required|string|max:255',
-             'slug' => 'required|string|max:255|unique:blogs',
+            //  'slug' => 'required|string|max:255|unique:blogs',
              'content' => 'required|string',
              'excerpt' => 'nullable|string',
              'published_at' => 'nullable|date',
              'status' => 'required|in:published,draft,archived',
              'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg',
          ]);
+
+         Log::debug($validated);
 
          // Handle file upload
          if ($request->hasFile('image')) {
@@ -43,7 +49,7 @@ class BlogsController extends Controller
 
          Blog::create([
              'title' => $validated['title'],
-             'slug' => $validated['slug'],
+            //  'slug' => $validated['slug'],
              'content' => $validated['content'],
              'excerpt' => $validated['excerpt'],
              'published_at' => $validated['published_at'],
@@ -54,7 +60,8 @@ class BlogsController extends Controller
              'category_id' => 1, // Or set a default category
          ]);
 
-         return response()->json(['message' => 'Blog created successfully']);
+        //  return response()->json(['message' => 'Blog created successfully']);
+         return back()->with('success','Blog created successfully');
      }
 
      // Show a specific blog post by ID
@@ -70,7 +77,7 @@ class BlogsController extends Controller
          // Validate incoming request
          $validated = $request->validate([
              'title' => 'nullable|string|max:255',
-             'slug' => 'nullable|string|unique:blogs,slug,' . $id,
+            //  'slug' => 'nullable|string|unique:blogs,slug,' . $id,
              'content' => 'nullable|string',
              'excerpt' => 'nullable|string',
              'author_id' => 'nullable|exists:users,id',
@@ -99,7 +106,7 @@ class BlogsController extends Controller
          // Update the blog post with the validated data
          $blog->update([
              'title' => $validated['title'] ?? $blog->title,
-             'slug' => $validated['slug'] ?? $blog->slug,
+            //  'slug' => $validated['slug'] ?? $blog->slug,
              'content' => $validated['content'] ?? $blog->content,
              'excerpt' => $validated['excerpt'] ?? $blog->excerpt,
              'author_id' => $validated['author_id'] ?? $blog->author_id,

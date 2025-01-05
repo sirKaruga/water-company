@@ -21,12 +21,16 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/', [HomeController::class, 'web_home']);
-Route::get('/services', [HomeController::class, 'services']);
+Route::get('/web_services', [HomeController::class, 'web_services']);
 Route::get('/web_products', [HomeController::class, 'web_pruducts']);
 Route::get('/about', [HomeController::class, 'about']);
 Route::get('/web_blog', [HomeController::class, 'web_blog']);
 Route::get('/contact', [HomeController::class, 'contact']);
 Route::get('/web_career', [HomeController::class, 'web_career']);
+Route::get('/web_projects', [HomeController::class, 'web_projects']);
+Route::get('project/{id}', [HomeController::class, 'show_project']);
+Route::get('view_service/{id}', [HomeController::class, 'view_service']);
+
 Route::get('/faq', [HomeController::class, 'faq']);
 
 Route::get('blog/{id}', [HomeController::class, 'show_blog']);

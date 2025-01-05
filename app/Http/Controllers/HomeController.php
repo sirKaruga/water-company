@@ -30,7 +30,8 @@ class HomeController extends Controller
     }
 
     public function web_home(){
-        return view('web_home');
+        $services = Service::all();
+        return view('web_home', compact('services'));
     }
 
     public function contact(){
@@ -67,13 +68,21 @@ class HomeController extends Controller
         // dd($blog);
         return view('blog_show', compact('blog'));
     }
-    public function services(){
-        $blogs = Blog::all();
+
+    public function show_project($id){
+        $project = Project::findOrFail($id);
+        // dd($blog);
+        return view('project_show', compact('project'));
+    }
+
+    public function web_services(){
         $services = Service::all();
-        $products = Product::all();
-        $projects = Project::all();
-        $careers = Career::all();
-        return view('index', compact('blogs','services', 'products', 'projects', 'careers', 'user'));
+
+        return view('web_services', compact('services'));
+    }
+    function view_service($id){
+        $service = Service::findOrFail($id);
+        return view('view_service', compact('service'));
     }
 
     public function about(){
@@ -94,6 +103,11 @@ class HomeController extends Controller
         $projects = Project::all();
         $careers = Career::all();
         return view('index');
+    }
+
+    public function web_projects(){
+        $projects = Project::all();
+        return view('web_projects_show', compact('projects'));
     }
 
 
