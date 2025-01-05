@@ -37,7 +37,7 @@ class CareersController extends Controller
 
            Career::create($request->all());
 
-           return response()->json(['message' => 'Career created successfully.'], 201);
+           return back()->with('success','successful');
        }
 
        // Show the form for editing the specified career
@@ -64,7 +64,8 @@ class CareersController extends Controller
            $career = Career::findOrFail($id);
            $career->update($request->all());
 
-           return response()->json(['message' => 'Career updated successfully.']);
+        //    return response()->json(['message' => 'Career updated successfully.']);
+           return back()->with('success','successful');
        }
 
        // Remove the specified career from storage
@@ -73,6 +74,6 @@ class CareersController extends Controller
            $career = Career::findOrFail($id);
            $career->delete();
 
-           return response()->json(['message' => 'Career deleted successfully.']);
+           return back()->with('success','successful');
        }
 }

@@ -105,7 +105,7 @@
 
                     <div class="mb-3">
                         <label for="image" class="form-label">Image</label>
-                        <input type="file" name="image" id="image" class="form-control">
+                        <input  accept="image/*"  type="file" name="image" id="image" class="form-control">
                     </div>
 
                     <div class="mb-3">
@@ -159,7 +159,7 @@
 
                     <div class="mb-3">
                         <label for="editImage" class="form-label">Image</label>
-                        <input type="file" name="image" id="editImage" class="form-control">
+                        <input  accept="image/*"  type="file" name="image" id="editImage" class="form-control">
                         <img id="currentImage" src="" alt="Current Image" class="mt-2 img-fluid" width="100">
                     </div>
 

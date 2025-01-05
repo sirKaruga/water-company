@@ -34,7 +34,7 @@ class ServicesController extends Controller
          $validated = $request->validate([
              'name' => 'required|string|max:255',
              'description' => 'nullable|string',
-             'image' => 'nullable|image|max:2048',
+            //  'image' => 'nullable|image|max:2048',
          ]);
 
          // Handle image upload
@@ -74,7 +74,7 @@ class ServicesController extends Controller
          $validated = $request->validate([
              'name' => 'required|string|max:255',
              'description' => 'required|string',
-             'image' => 'nullable|image|max:2048', // Optional image upload
+            //  'image' => 'nullable|image|max:2048', // Optional image upload
          ]);
 
          if ($request->hasFile('image')) {

@@ -31,7 +31,7 @@ class ProjectController extends Controller
             'description' => 'required|string',
             'completed_date' => 'nullable|date',
             'client_name' => 'nullable|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            // 'image' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -40,7 +40,7 @@ class ProjectController extends Controller
 
         Project::create($validatedData);
 
-        return response()->json(['message' => 'Project created successfully.']);
+        return back()->with('success','successful');
     }
 
     /**
@@ -53,7 +53,7 @@ class ProjectController extends Controller
             'description' => 'required|string',
             'completed_date' => 'nullable|date',
             'client_name' => 'nullable|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            // 'image' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -66,7 +66,7 @@ class ProjectController extends Controller
 
         $project->update($validatedData);
 
-        return response()->json(['message' => 'Project updated successfully.']);
+        return back()->with('success','successful');
     }
 
     /**

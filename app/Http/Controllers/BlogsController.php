@@ -35,7 +35,7 @@ class BlogsController extends Controller
              'excerpt' => 'nullable|string',
              'published_at' => 'nullable|date',
              'status' => 'required|in:published,draft,archived',
-             'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg',
+            //  'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg',
          ]);
 
          Log::debug($validated);
@@ -85,7 +85,7 @@ class BlogsController extends Controller
              'tags' => 'nullable|string',
              'published_at' => 'nullable|date',
              'status' => 'nullable|in:draft,published,archived',
-             'image' => 'nullable|image|max:1024', // Validate image
+            //  'image' => 'nullable|image|max:1024', // Validate image
          ]);
 
          // Find the blog post by ID
@@ -117,7 +117,7 @@ class BlogsController extends Controller
              'image' => $imagePath, // Store image path
          ]);
 
-         return response()->json($blog); // Return the updated blog post
+         return back()->with('success','successful'); // Return the updated blog post
      }
 
      // Delete a blog post
